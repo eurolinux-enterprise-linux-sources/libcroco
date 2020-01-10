@@ -1,7 +1,7 @@
 Name:             libcroco
 Summary:          A CSS2 parsing library
-Version:          0.6.11
-Release:          1%{?dist}
+Version:          0.6.12
+Release:          4%{?dist}
 License:          LGPLv2
 Group:            System Environment/Libraries
 Source:           http://download.gnome.org/sources/libcroco/0.6/%{name}-%{version}.tar.xz
@@ -57,6 +57,10 @@ make check
 %{_datadir}/gtk-doc/html/libcroco
 
 %changelog
+* Thu Apr 06 2017 Richard Hughes <rhughes@redhat.com> - 0.6.12-4
+- Update to 0.6.12
+- Resolves: #1569991
+
 * Thu Dec 17 2015 Kalev Lember <klember@redhat.com> - 0.6.11-1
 - Update to 0.6.11
 - Resolves: #1386999
