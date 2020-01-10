@@ -111,8 +111,6 @@ test_import_style (CRDocHandler * a_handler,
                    CRString * a_uri_default_ns,
                    CRParsingLocation *a_location)
 {
-	(void) a_uri;
-
         g_return_if_fail (a_handler) ;
 
         fprintf (stdout, "****************\n");
@@ -126,7 +124,7 @@ test_import_style (CRDocHandler * a_handler,
 
                 for (cur = a_media_list; cur; cur = cur->next) {
                         if (cur->data) {
-                                gchar *str =
+                                guchar *str =
                                         g_strndup
                                         (((CRString *) cur->data)->stryng->str,
                                          ((CRString *) cur->data)->stryng->len);
@@ -143,7 +141,7 @@ test_import_style (CRDocHandler * a_handler,
                 fprintf (stdout, "--------------------\n");
 
                 if (a_uri_default_ns) {
-                        guchar *str = (guchar *) cr_string_dup2 
+                        guchar *str = cr_string_dup2 
                                 (a_uri_default_ns) ;
                         if (str) {
                                 fprintf (stdout, "%s\n", str);
@@ -152,7 +150,6 @@ test_import_style (CRDocHandler * a_handler,
                         }
                 }
         }
-
         fprintf (stdout, "******************\n\n");
         a_uri = NULL;           /*keep compiler happy */
 }
@@ -169,7 +166,7 @@ test_namespace_declaration (CRDocHandler * a_handler,
         fprintf (stdout, "namespace_declaration:\n");
 
         if (a_prefix) {
-                gchar *prefix = NULL;
+                guchar *prefix = NULL;
 
                 prefix = cr_string_dup2 (a_prefix) ;
                 if (prefix) {
@@ -179,7 +176,7 @@ test_namespace_declaration (CRDocHandler * a_handler,
                 }
         }
         if (a_uri) {
-                gchar *uri = NULL;
+                guchar *uri = NULL;
 
                 uri = cr_string_dup2 (a_uri) ;
                 if (uri) {
@@ -203,7 +200,7 @@ test_comment (CRDocHandler * a_handler,
         fprintf (stdout, "***************\n");
         fprintf (stdout, "comment:\n");
         if (a_comment) {
-                gchar *comment = NULL;
+                guchar *comment = NULL;
 
                 comment = cr_string_dup2 (a_comment);
 
@@ -266,7 +263,7 @@ test_property (CRDocHandler * a_handler,
         if (a_name 
             && a_name->stryng
             && a_name->stryng->str) {
-                gchar *name = g_strndup 
+                guchar *name = g_strndup 
                         (a_name->stryng->str, 
                          a_name->stryng->len);
 
@@ -320,7 +317,7 @@ test_start_media (CRDocHandler * a_handler,
 
         if (a_media_list) {
                 GList *cur = NULL;
-                gchar *medium = NULL;
+                guchar *medium = NULL;
 
                 for (cur = a_media_list; cur; cur = cur->next) {
                         if (cur->data == NULL)
@@ -350,7 +347,7 @@ test_end_media (CRDocHandler * a_handler,
 
         if (a_media_list) {
                 GList *cur = NULL;
-                gchar *medium = NULL;
+                guchar *medium = NULL;
 
                 for (cur = a_media_list; cur; cur = cur->next) {
                         if (cur->data == NULL)
@@ -377,7 +374,7 @@ test_start_page (CRDocHandler * a_handler,
                  CRString * a_pseudo_page,
                  CRParsingLocation *a_location)
 {
-        gchar *name = NULL,
+        guchar *name = NULL,
                 *pseudo_page = NULL;
 
         g_return_if_fail (a_handler);
@@ -413,7 +410,7 @@ test_end_page (CRDocHandler * a_handler,
                CRString * a_name, 
                CRString * a_pseudo_page)
 {
-        gchar *name = NULL,
+        guchar *name = NULL,
                 *pseudo_page = NULL;
 
         g_return_if_fail (a_handler);
@@ -449,7 +446,7 @@ static void
 test_ignorable_at_rule (CRDocHandler * a_handler, 
                         CRString * a_name)
 {
-        gchar *name = NULL;
+        guchar *name = NULL;
 
         g_return_if_fail (a_handler);
 
@@ -554,7 +551,7 @@ main (int argc, char **argv)
                 return 0;
         }
 
-        status = test_cr_parser_parse ((guchar *) options.files_list[0]);
+        status = test_cr_parser_parse (options.files_list[0]);
 
         if (status != CR_OK) {
                 fprintf (stdout, "KO\n");

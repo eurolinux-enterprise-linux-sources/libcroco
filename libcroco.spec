@@ -1,7 +1,7 @@
 Name:             libcroco
 Summary:          A CSS2 parsing library
-Version:          0.6.12
-Release:          4%{?dist}
+Version:          0.6.8
+Release:          3%{?dist}
 License:          LGPLv2
 Group:            System Environment/Libraries
 Source:           http://download.gnome.org/sources/libcroco/0.6/%{name}-%{version}.tar.xz
@@ -18,7 +18,9 @@ CSS2 parsing and manipulation library for GNOME
 %package devel
 Summary:          Libraries and include files for developing with libcroco
 Group:            Development/Libraries
-Requires:         %{name}%{_isa} = %{version}-%{release}
+Requires:         %{name} = %{version}-%{release}
+Requires:         glib2-devel
+Requires:         libxml2-devel
 
 %description devel
 This package provides the necessary development libraries and include
@@ -33,7 +35,7 @@ files to allow you to develop with libcroco.
 make %{?_smp_mflags} CFLAGS="$CFLAGS -fno-strict-aliasing"
 
 %install
-%make_install
+make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 
 %check
@@ -44,8 +46,7 @@ make check
 %postun -p /sbin/ldconfig
 
 %files
-%license COPYING COPYING.LIB
-%doc AUTHORS NEWS README
+%doc AUTHORS COPYING COPYING.LIB NEWS README 
 %{_bindir}/csslint-0.6
 %{_libdir}/*.so.*
 
@@ -57,20 +58,6 @@ make check
 %{_datadir}/gtk-doc/html/libcroco
 
 %changelog
-* Thu Apr 06 2017 Richard Hughes <rhughes@redhat.com> - 0.6.12-4
-- Update to 0.6.12
-- Resolves: #1569991
-
-* Thu Dec 17 2015 Kalev Lember <klember@redhat.com> - 0.6.11-1
-- Update to 0.6.11
-- Resolves: #1386999
-
-* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 0.6.8-5
-- Mass rebuild 2014-01-24
-
-* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 0.6.8-4
-- Mass rebuild 2013-12-27
-
 * Tue Jul 16 2013 Matthias Clasen <mclasen@redhat.com> - 0.6.8-3
 - Disable strict aliasing, since the code is not strict-aliasing-clean
 

@@ -327,71 +327,55 @@ evaluate_selectors (gchar * a_xml_path,
         xml_doc = xmlParseFile (a_xml_path);
         if (!xml_doc) {
                 g_printerr ("Error: Could not parse file %s\n", a_xml_path);
-                status = CR_ERROR;
-                goto end;
+                return CR_ERROR;
         }
         if (a_author_sheet_path) {
                 status = cr_om_parser_simply_parse_file
-                        ((const guchar *) a_author_sheet_path, CR_ASCII, &author_sheet);
+                        (a_author_sheet_path, CR_ASCII, &author_sheet);
                 if (!author_sheet) {
                         g_printerr ("Error: Could not parse author sheet\n");
                 }
         }
         if (a_user_sheet_path) {
                 status = cr_om_parser_simply_parse_file
-                        ((const guchar *) a_user_sheet_path, CR_ASCII, &user_sheet);
+                        (a_user_sheet_path, CR_ASCII, &user_sheet);
                 if (!user_sheet) {
                         g_printerr ("Error: Could not parse author sheet\n");
                 }
         }
         if (a_ua_sheet_path) {
                 status = cr_om_parser_simply_parse_file
-                        ((const guchar *) a_ua_sheet_path, CR_ASCII, &ua_sheet);
+                        (a_ua_sheet_path, CR_ASCII, &ua_sheet);
                 if (!ua_sheet) {
                         g_printerr ("Error: Could not parse ua sheet\n");
                 }
         }
         cascade = cr_cascade_new (author_sheet, user_sheet, ua_sheet);
-
-        if (author_sheet)
-          cr_stylesheet_unref (author_sheet);
-
-        if (user_sheet)
-          cr_stylesheet_unref (user_sheet);
-
-        if (ua_sheet)
-          cr_stylesheet_unref (ua_sheet);
-
         if (!cascade) {
                 g_printerr ("Could not instanciate the cascade\n");
-                status = CR_ERROR;
-                goto end;
+                return CR_ERROR;
         }
         sel_eng = cr_sel_eng_new ();
         if (!sel_eng) {
                 g_printerr
                         ("Error: Could not instanciate the selection engine\n");
-                status = CR_ERROR;
-                goto end;
+                return CR_ERROR;
         }
         xpath_context = xmlXPathNewContext (xml_doc);
         if (!xpath_context) {
                 g_printerr
                         ("Error: Could not instanciate the xpath context\n");
-                status = CR_ERROR;
-                goto end;
+                return CR_ERROR;
         }
-        xpath_object = xmlXPathEvalExpression ((const xmlChar *) a_xpath, xpath_context);
+        xpath_object = xmlXPathEvalExpression (a_xpath, xpath_context);
         if (!xpath_object) {
                 g_printerr ("Error: Could not evaluate xpath expression\n");
-                status = CR_ERROR;
-                goto end;
+                return CR_ERROR;
         }
         if (xpath_object->type != XPATH_NODESET || !xpath_object->nodesetval) {
                 g_printerr
                         ("Error: xpath does not evalualuate to a node set\n");
-                status = CR_ERROR;
-                goto end;
+                return CR_ERROR;
         }
 
         for (i = 0; i < xpath_object->nodesetval->nodeNr; i++) {
@@ -402,13 +386,11 @@ evaluate_selectors (gchar * a_xml_path,
                 }
         }
 
-        end:
-
         if (xpath_context) {
                 xmlXPathFreeContext (xpath_context);
                 xpath_context = NULL;
         }
-        if (xpath_object) {
+        if (xpath_context) {
                 xmlXPathFreeObject (xpath_object);
                 xpath_object = NULL;
         }
@@ -418,14 +400,8 @@ evaluate_selectors (gchar * a_xml_path,
         }
         if (cascade) {
                 cr_cascade_destroy (cascade);
-                cascade = NULL;
         }
-        if (xml_doc) {
-                xmlFreeDoc (xml_doc);
-                xml_doc = NULL;
-        }
-
-        return status;
+        return CR_OK;
 }
 
 /***************************
@@ -760,7 +736,7 @@ dump_location_annotated_simple_sel (CRSimpleSel *a_this)
         g_return_if_fail (a_this) ;
 
         /*first, display the entire simple sel*/
-        str0 = (gchar *) cr_simple_sel_one_to_string
+        str0 = cr_simple_sel_one_to_string
                 (cur_simple_sel) ;
         if (str0) {
                 g_print ("/*%s*/\n", str0) ;
@@ -793,7 +769,7 @@ dump_location_annotated_simple_sel (CRSimpleSel *a_this)
         for (cur_add_sel = cur_simple_sel->add_sel; 
              cur_add_sel;
              cur_add_sel = cur_add_sel->next) {
-                str0 = (gchar *) cr_additional_sel_one_to_string 
+                str0 = cr_additional_sel_one_to_string 
                         (cur_add_sel) ;
                 if (str0) {
                         g_print ("\n  /*%s*/\n", str0) ;
@@ -872,7 +848,7 @@ property (CRDocHandler *a_this,
                 g_print ("%s", str) ;
                 str = NULL ;
                 if (a_expr) {
-                        str = (gchar *) cr_term_to_string (a_expr) ;
+                        str = cr_term_to_string (a_expr) ;
                         if (str) {
                                 g_print (" : %s;\n\n", str) ;
                                 g_free (str) ;
@@ -905,7 +881,7 @@ property (CRDocHandler *a_this,
         for (cur_term = a_expr ;
              cur_term;
              cur_term = cur_term->next) {
-                str = (gchar *) cr_term_one_to_string (cur_term) ;
+                str = cr_term_one_to_string (cur_term) ;
                 if (str) {
                         g_print ("  /*%s*/\n", str) ;
                         g_free (str) ;
@@ -994,17 +970,17 @@ main (int argc, char **argv)
                                  options.user_sheet_path,
                                  options.ua_sheet_path, options.xpath);
                 } else if (options.css_files_list != NULL) {
-                        status = cssom_parse ((guchar *) options.css_files_list[0]);
+                        status = cssom_parse (options.css_files_list[0]);
                 }
         } else if (options.dump_location == TRUE) {
                 if (options.css_files_list) {
                         status = sac_parse_and_display_locations 
-                                ((guchar *) options.css_files_list[0]) ;
+                                (options.css_files_list[0]) ;
                 } else {
                         display_usage () ;
                         return -1 ;
                 }
         }
 
-        return (status == CR_OK) ? 0 : -2;
+        return 0;
 }

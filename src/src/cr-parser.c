@@ -197,9 +197,9 @@ if ((a_status) != CR_OK) \
  */
 #define PEEK_NEXT_CHAR(a_this, a_to_char) \
 {\
-enum CRStatus pnc_status ; \
-pnc_status = cr_tknzr_peek_char  (PRIVATE (a_this)->tknzr, a_to_char) ; \
-CHECK_PARSING_STATUS (pnc_status, TRUE) \
+enum CRStatus status ; \
+status = cr_tknzr_peek_char  (PRIVATE (a_this)->tknzr, a_to_char) ; \
+CHECK_PARSING_STATUS (status, TRUE) \
 }
 
 /**
@@ -444,7 +444,7 @@ cr_parser_error_set_msg (CRParserError * a_this, const guchar * a_msg)
                 g_free (a_this->msg);
         }
 
-        a_this->msg = (guchar *) g_strdup ((const gchar *) a_msg);
+        a_this->msg = g_strdup (a_msg);
 }
 
 /**
@@ -733,7 +733,7 @@ cr_parser_parse_stylesheet_core (CRParser * a_this)
 
  error:
         cr_parser_push_error
-                (a_this, (const guchar *) "could not recognize next production", CR_ERROR);
+                (a_this, "could not recognize next production", CR_ERROR);
 
         cr_parser_dump_err_stack (a_this, TRUE);
 
@@ -2703,7 +2703,7 @@ cr_parser_parse_stylesheet (CRParser * a_this)
         }
 
         cr_parser_push_error
-                (a_this, (const guchar *) "could not recognize next production", CR_ERROR);
+                (a_this, "could not recognize next production", CR_ERROR);
 
         if (PRIVATE (a_this)->sac_handler
             && PRIVATE (a_this)->sac_handler->unrecoverable_error) {
@@ -2745,7 +2745,7 @@ cr_parser_parse_stylesheet (CRParser * a_this)
  *coming the input stream given in parameter.
  *
  *Returns the newly created instance of #CRParser,
- *or NULL if an error occurred.
+ *or NULL if an error occured.
  */
 CRParser *
 cr_parser_new (CRTknzr * a_tknzr)
@@ -3189,7 +3189,7 @@ cr_parser_parse_declaration (CRParser * a_this,
 
         CHECK_PARSING_STATUS_ERR
                 (a_this, status, FALSE,
-                 (const guchar *) "while parsing declaration: next property is malformed",
+                 "while parsing declaration: next property is malformed",
                  CR_SYNTAX_ERROR);
 
         READ_NEXT_CHAR (a_this, &cur_char);
@@ -3198,7 +3198,7 @@ cr_parser_parse_declaration (CRParser * a_this,
                 status = CR_PARSING_ERROR;
                 cr_parser_push_error
                         (a_this,
-                         (const guchar *) "while parsing declaration: this char must be ':'",
+                         "while parsing declaration: this char must be ':'",
                          CR_SYNTAX_ERROR);
                 goto error;
         }
@@ -3209,7 +3209,7 @@ cr_parser_parse_declaration (CRParser * a_this,
 
         CHECK_PARSING_STATUS_ERR
                 (a_this, status, FALSE,
-                 (const guchar *) "while parsing declaration: next expression is malformed",
+                 "while parsing declaration: next expression is malformed",
                  CR_SYNTAX_ERROR);
 
         cr_parser_try_to_skip_spaces_and_comments (a_this);
@@ -3349,7 +3349,7 @@ cr_parser_parse_ruleset (CRParser * a_this)
 
         ENSURE_PARSING_COND_ERR
                 (a_this, cur_char == '{',
-                 (const guchar *) "while parsing rulset: current char should be '{'",
+                 "while parsing rulset: current char should be '{'",
                  CR_SYNTAX_ERROR);
 
         if (PRIVATE (a_this)->sac_handler
@@ -3413,7 +3413,7 @@ cr_parser_parse_ruleset (CRParser * a_this)
         }
         CHECK_PARSING_STATUS_ERR
                 (a_this, status, FALSE,
-                 (const guchar *) "while parsing ruleset: next construction should be a declaration",
+                 "while parsing ruleset: next construction should be a declaration",
                  CR_SYNTAX_ERROR);
 
         for (;;) {
@@ -3455,7 +3455,7 @@ cr_parser_parse_ruleset (CRParser * a_this)
         READ_NEXT_CHAR (a_this, &cur_char);
         ENSURE_PARSING_COND_ERR
                 (a_this, cur_char == '}',
-                 (const guchar *) "while parsing rulset: current char must be a '}'",
+                 "while parsing rulset: current char must be a '}'",
                  CR_SYNTAX_ERROR);
 
         selector->location = end_parsing_location;
