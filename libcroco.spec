@@ -1,7 +1,7 @@
 Name:             libcroco
 Summary:          A CSS2 parsing library
 Version:          0.6.8
-Release:          3%{?dist}
+Release:          5%{?dist}
 License:          LGPLv2
 Group:            System Environment/Libraries
 Source:           http://download.gnome.org/sources/libcroco/0.6/%{name}-%{version}.tar.xz
@@ -58,6 +58,12 @@ make check
 %{_datadir}/gtk-doc/html/libcroco
 
 %changelog
+* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 0.6.8-5
+- Mass rebuild 2014-01-24
+
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 0.6.8-4
+- Mass rebuild 2013-12-27
+
 * Tue Jul 16 2013 Matthias Clasen <mclasen@redhat.com> - 0.6.8-3
 - Disable strict aliasing, since the code is not strict-aliasing-clean
 
